@@ -1,16 +1,3 @@
-// GLSL Shader code
-// import vertexShaderSrc3D from '../shaders/blockVert.glsl'
-// import fragmentShaderSrc3D from '../shaders/blockFrag.glsl'
-// import foglessVertexShaderSrc3D from '../shaders/blockVertFogless.glsl'
-// import foglessFragmentShaderSrc3D from '../shaders/blockFragFogless.glsl'
-// import vertexShaderSrc2D from '../shaders/2dVert.glsl'
-// import fragmentShaderSrc2D from '../shaders/2dFrag.glsl'
-// import vertexShaderSrcEntity from '../shaders/entityVert.glsl'
-// import fragmentShaderSrcEntity from '../shaders/entityFrag.glsl'
-
-// Import WebWorker code
-// import workerCode from '../workers/Caves.js'
-
 // imports
 import { seedHash, randomSeed, noiseProfile } from "./random.js"
 import { PVector, Matrix, Plane, cross } from "./3Dutils.js"

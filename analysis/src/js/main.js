@@ -32,9 +32,6 @@ function loadFile(data, content) {
 
     const xml = parseNodeToXML(data.ast);
 
-    console.log(xml);
-    console.log(content);
-
     contentContainer.innerText = xml;
 }
 
@@ -45,8 +42,6 @@ function parseNodeToXML(ast, tab=0) {
     const type = ast.type;
     const start = ast.start;
     const end = ast.end;
-
-    console.log(start, end);
 
     for (let i = 0; i < tab; i++) tabOffset += ' ';
 

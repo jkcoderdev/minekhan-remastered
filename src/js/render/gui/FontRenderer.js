@@ -1,0 +1,3 @@
+class FontRenderer {}
+
+export { FontRenderer };

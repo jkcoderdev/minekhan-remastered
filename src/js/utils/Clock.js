@@ -1,0 +1,3 @@
+class Clock {}
+
+export { Clock };

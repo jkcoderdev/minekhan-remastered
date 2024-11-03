@@ -4479,16 +4479,20 @@ async function MineKhan() {
 		analytics.totalFrameTime += performance.now() - frameStart
 		analytics.worstFrameTime = max(performance.now() - frameStart, analytics.worstFrameTime)
 		analytics.worstFps = min(frameFPS, analytics.worstFps)
-		win.raf = requestAnimationFrame(renderLoop)
+		
+		// Request next animation frame
+		window.animationFrameId = requestAnimationFrame(renderLoop);
 	}
 	return renderLoop
 }
 
 (async function() {
-	if (win.raf) {
-		win.cancelAnimationFrame(win.raf)
-		console.log("Canceled", win.raf)
+	// Cancel any animation frames before initialzing anything
+	if (window.animationFrameId) {
+		window.cancelAnimationFrame(window.animationFrameId);
+		console.log("Canceled animation frame with id: " + window.animationFrameId);
 	}
-	var init = await MineKhan()
-	init()
+
+	const init = await MineKhan();
+	init();
 })()

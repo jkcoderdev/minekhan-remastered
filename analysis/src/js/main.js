@@ -27,12 +27,79 @@ const contentContainer = document.querySelector('#content');
     }
 })();
 
-function loadFile(data, content) {
+async function loadFile(data, content) {
     menuContainer.style.display = 'none';
 
-    const xml = parseNodeToXML(data.ast);
+    console.log(data);
 
-    contentContainer.innerText = xml;
+    const text = await new Promise((resolve) => resolve(parseNodeToText(data.ast)));
+
+    contentContainer.innerText = text;
+}
+
+function parseNodeToText(ast, tab=0) {
+    const tabOffset = (offset) => Array(offset).fill(' ').join('');
+    let code = '';
+    
+    const type = ast.type;
+    
+    code += type + '(';
+
+    const keys = [];
+    for (const key of Object.keys(ast)) {
+        if (['type', 'start', 'end'].includes(key)) continue;
+
+        keys.push(key);
+    }
+
+
+    if (keys.length != 0) {
+        code += '\n';
+
+        for (const key of keys) {
+            const value = ast[key];
+
+            code += tabOffset(tab + 2) + key + ': ';
+            
+            if (value === null) {
+                code += 'null';
+            } else if (typeof value === 'string') {
+                code += '\'' + value.replaceAll('\'', '\\\'') + '\'';
+            } else if (typeof value === 'object') {
+                if (typeof value.length !== 'undefined') {
+                    code += '[';
+
+                    for (const node of value) {
+                        code += '\n'
+
+                        if (node === null) {
+                            code += 'null';
+                        } else {
+                            code += tabOffset(tab + 4) + parseNodeToText(node, tab + 4);
+                        }
+
+                        code += ',';
+                    }
+
+                    if (value.length !== 0) code += '\n' + tabOffset(tab + 2);
+
+                    code += ']';
+                } else {
+                    code += parseNodeToText(value, tab + 2);
+                }
+            } else {
+                code += value.toString();
+            }
+
+            code += ',\n';
+        }
+
+        code += tabOffset(tab);
+    }
+
+    code += ')';
+
+    return code;
 }
 
 function parseNodeToXML(ast, tab=0) {

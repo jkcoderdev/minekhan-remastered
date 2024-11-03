@@ -30,7 +30,7 @@ async function MineKhan() {
 	const { cos, sin, round, floor, ceil, min, max, abs, sqrt } = Math
 	const chatOutput = document.getElementById("chat")
 	const chatInput = document.getElementById("chatbar")
-	let now = Date.now()
+	let currentFrameTimestamp = Date.now()
 
 	win.blockData = blockData
 	win.savebox = document.getElementById("savebox")
@@ -174,13 +174,13 @@ async function MineKhan() {
 	async function save() {
 		let saveObj = {
 			id: world.id,
-			edited: now,
+			edited: currentFrameTimestamp,
 			name: world.name,
 			version: version,
 			code: world.getSaveString()
 		}
 		await saveToDB(world.id, saveObj).catch(e => console.error(e))
-		world.edited = now
+		world.edited = currentFrameTimestamp
 		if (location.href.startsWith("https://willard.fun/")) {
 			console.log('Saving to server')
 			await fetch(`https://willard.fun/minekhan/saves?id=${world.id}&edited=${saveObj.edited}&name=${encodeURIComponent(world.name)}&version=${encodeURIComponent(version)}`, {
@@ -236,6 +236,7 @@ async function MineKhan() {
 		"main menu": () => {},
 		"options": () => {},
 		"play": () => {},
+		"loading": () => {},
 		"pause": () => {},
 		"creation menu": () => {},
 		"inventory": () => {},
@@ -428,7 +429,7 @@ async function MineKhan() {
 
 	function play() {
 		canvas.onblur()
-		p.lastBreak = now
+		p.lastBreak = currentFrameTimestamp
 		holding = inventory.hotbar.hand.id
 		use3d()
 		getPointer()
@@ -438,7 +439,7 @@ async function MineKhan() {
 		changeScene("play")
 		ctx.clearRect(0, 0, width, height)
 		crosshair()
-		hud(true)
+		updateHUD(true)
 		inventory.hotbar.render()
 		hotbar()
 	}
@@ -715,8 +716,8 @@ async function MineKhan() {
 			if (fov === this.currentFov) return
 
 			if (!fov) {
-				fov = this.currentFov + this.step * (now - this.lastStep)
-				this.lastStep = now
+				fov = this.currentFov + this.step * (currentFrameTimestamp - this.lastStep)
+				this.lastStep = currentFrameTimestamp
 				if (Math.sign(this.targetFov - this.currentFov) !== Math.sign(this.targetFov - fov)) {
 					fov = this.targetFov
 				}
@@ -724,7 +725,7 @@ async function MineKhan() {
 			else if (time) {
 				this.targetFov = fov
 				this.step = (fov - this.currentFov) / time
-				this.lastStep = now
+				this.lastStep = currentFrameTimestamp
 				return
 			}
 			else {
@@ -1395,10 +1396,10 @@ async function MineKhan() {
 
 			world.setBlock(hitBox.pos[0], hitBox.pos[1], hitBox.pos[2], t, 0)
 			if (t) {
-				p.lastPlace = now
+				p.lastPlace = currentFrameTimestamp
 			}
 			else {
-				p.lastBreak = now
+				p.lastBreak = currentFrameTimestamp
 			}
 		}
 	}
@@ -1525,7 +1526,7 @@ async function MineKhan() {
 		if (screen !== "play") return
 		alerts.push({
 			msg: msg.substr(0, 50),
-			created: now,
+			created: currentFrameTimestamp,
 			rendered: false
 		})
 		if (alerts.length > 5) alerts.shift()
@@ -1545,7 +1546,7 @@ async function MineKhan() {
 	function renderChatAlerts() {
 		if (!alerts.length || screen !== "play") return
 		let y = height - 150
-		if (now - alerts[0].created > 10000 || !alerts.at(-1).rendered) {
+		if (currentFrameTimestamp - alerts[0].created > 10000 || !alerts.at(-1).rendered) {
 			// Clear old alerts
 			let x = 50
 			let y2 = y - 50 * (alerts.length - 1) - 20
@@ -1554,7 +1555,7 @@ async function MineKhan() {
 			ctx.clearRect(x, y2, w, h)
 		}
 		else return
-		while(alerts.length && now - alerts[0].created > 10000) {
+		while(alerts.length && currentFrameTimestamp - alerts[0].created > 10000) {
 			alerts.shift()
 		}
 		textSize(20)
@@ -1701,7 +1702,7 @@ async function MineKhan() {
 				}
 			}
 			if (oldest) {
-				lines.push(`${name}: ${broken} blocks broken and ${placed} blocks placed between ${timeString(now-oldest)} and ${timeString(now-newest)}.`)
+				lines.push(`${name}: ${broken} blocks broken and ${placed} blocks placed between ${timeString(currentFrameTimestamp-oldest)} and ${timeString(currentFrameTimestamp-newest)}.`)
 			}
 		}
 		if (lines.length) {
@@ -1974,7 +1975,7 @@ async function MineKhan() {
 				if (!a[4]) {
 					// If it's not an "Undo" packet, log it.
 					let old = world.getBlock(a[0], a[1], a[2])
-					a.push(old, now)
+					a.push(old, currentFrameTimestamp)
 					if (!blockLog[packet.author]) blockLog[packet.author] = []
 					blockLog[packet.author].push(a)
 				}
@@ -2008,7 +2009,7 @@ async function MineKhan() {
 				ent.velx = pos.vx || 0
 				ent.vely = pos.vy || 0
 				ent.velz = pos.vz || 0
-				packet.data.time = now
+				packet.data.time = currentFrameTimestamp
 			}
 			else if (packet.type === "error") {
 				multiplayerError = packet.data
@@ -2193,7 +2194,7 @@ async function MineKhan() {
 			if (!remote && !doNotLog) {
 				// Log your own blocks
 				let oldBlock = chunk.getBlock(xm, y, zm)
-				blockLog[currentUser.username].push([x, y, z, blockID, oldBlock, now])
+				blockLog[currentUser.username].push([x, y, z, blockID, oldBlock, currentFrameTimestamp])
 			}
 			if (blockID) {
 				chunk.setBlock(xm, y, zm, blockID, !lazy)
@@ -2381,7 +2382,7 @@ async function MineKhan() {
 			this.lastTick = performance.now()
 			this.tickCount++
 			if (this.tickCount & 1) {
-				hud() // Update the HUD at 10 TPS
+				updateHUD() // Update the HUD at 10 TPS
 				renderChatAlerts()
 			}
 
@@ -2394,7 +2395,7 @@ async function MineKhan() {
 				this.chunkGenQueue.sort(sortChunks)
 			}
 
-			if (controlMap.breakBlock.pressed && (p.lastBreak < now - 250 || p.autoBreak) && screen === "play") {
+			if (controlMap.breakBlock.pressed && (p.lastBreak < currentFrameTimestamp - 250 || p.autoBreak) && screen === "play") {
 				changeWorldBlock(0)
 			}
 
@@ -2488,7 +2489,7 @@ async function MineKhan() {
 		}
 		render() {
 			// Was in tick(); moved here just for joseph lol
-			if (controlMap.placeBlock.pressed && (p.lastPlace < now - 250 || p.autoBuild)) {
+			if (controlMap.placeBlock.pressed && (p.lastPlace < currentFrameTimestamp - 250 || p.autoBuild)) {
 				lookingAt()
 				newWorldBlock()
 			}
@@ -3215,7 +3216,7 @@ async function MineKhan() {
 				return
 			}
 			world = new World()
-			world.id = "" + now + (Math.random() * 1000000 | 0)
+			world.id = "" + currentFrameTimestamp + (Math.random() * 1000000 | 0)
 			let name = boxCenterTop.value || "World"
 			let number = ""
 			let naming = true
@@ -3291,7 +3292,7 @@ async function MineKhan() {
 			if (code) {
 				try {
 					world.loadSave(code)
-					world.id = world.id || "" + now + (Math.random() * 1000000 | 0)
+					world.id = world.id || "" + currentFrameTimestamp + (Math.random() * 1000000 | 0)
 				}
 				catch(e) {
 					alert("Unable to load save")
@@ -3336,7 +3337,7 @@ async function MineKhan() {
 		// Pause buttons
 		Button.add(width / 2, 225, 300, 40, "Resume", "pause", play)
 		Button.add(width / 2, 275, 300, 40, "Options", "pause", () => changeScene("options"))
-		Button.add(width / 2, 325, 300, 40, "Save", "pause", save, () => !!multiplayer && !multiplayer.host, () => `Save the world to your browser + account. Doesn't work in incognito.\n\nLast saved ${timeString(now - world.edited)}.`)
+		Button.add(width / 2, 325, 300, 40, "Save", "pause", save, () => !!multiplayer && !multiplayer.host, () => `Save the world to your browser + account. Doesn't work in incognito.\n\nLast saved ${timeString(currentFrameTimestamp - world.edited)}.`)
 		Button.add(width / 2, 375, 300, 40, "Get Save Code", "pause", () => {
 			savebox.classList.remove("hidden")
 			saveDirections.classList.remove("hidden")
@@ -3422,7 +3423,7 @@ async function MineKhan() {
 
 	let debugLines = []
 	let newDebugLines = []
-	function hud(clear) {
+	function updateHUD(clear) {
 		if (p.spectator || screen !== "play") return
 		if (clear) debugLines.length = 0
 
@@ -3575,7 +3576,7 @@ async function MineKhan() {
 		if(screen === "play") {
 			if (document.pointerLockElement !== canvas) {
 				getPointer()
-				p.lastBreak = now
+				p.lastBreak = currentFrameTimestamp
 			}
 			else {
 				if (name === controlMap.breakBlock.key) {
@@ -3609,20 +3610,20 @@ async function MineKhan() {
 
 				if(name === controlMap.superBreaker.key) {
 					p.autoBreak = !p.autoBreak
-					hud()
+					updateHUD()
 				}
 
 				if(name === controlMap.hyperBuilder.key) {
 					p.autoBuild = !p.autoBuild
-					hud()
+					updateHUD()
 				}
 
 				if (name === controlMap.jump.key && !p.spectator) {
-					if (now < p.lastJump + 400) {
+					if (currentFrameTimestamp < p.lastJump + 400) {
 						p.flying = !p.flying
 					}
 					else {
-						p.lastJump = now
+						p.lastJump = currentFrameTimestamp
 					}
 				}
 
@@ -3647,7 +3648,7 @@ async function MineKhan() {
 					if (!p.spectator) {
 						hotbar()
 						crosshair()
-						hud(true)
+						updateHUD(true)
 					}
 					else {
 						ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
@@ -3661,12 +3662,12 @@ async function MineKhan() {
 
 				if (name === "Semicolon") {
 					releasePointer()
-					freezeFrame = now + 500
+					freezeFrame = currentFrameTimestamp + 500
 				}
 
 				if (name === "F3") {
 					settings.showDebug = (settings.showDebug + 1) % 3
-					hud()
+					updateHUD()
 				}
 
 				// Drop held item; this just crashes since I broke Item entities.
@@ -3695,9 +3696,9 @@ async function MineKhan() {
 		}
 		else {
 			document.onmousemove = trackMouse
-			if (screen === "play" && now > freezeFrame) {
+			if (screen === "play" && currentFrameTimestamp > freezeFrame) {
 				changeScene("pause")
-				unpauseDelay = now + 500
+				unpauseDelay = currentFrameTimestamp + 500
 			}
 		}
 		for (let key in Key) {
@@ -3766,7 +3767,7 @@ async function MineKhan() {
 	}
 	canvas.onkeyup = function(e) {
 		Key[e.code] = false
-		if(e.code === "Escape" && (screen === "chat" || screen === "pause" || screen === "inventory" || screen === "options" && previousScreen === "pause") && now > unpauseDelay) {
+		if(e.code === "Escape" && (screen === "chat" || screen === "pause" || screen === "inventory" || screen === "options" && previousScreen === "pause") && currentFrameTimestamp > unpauseDelay) {
 			play()
 		}
 		if (screen === "play") {
@@ -4084,9 +4085,9 @@ async function MineKhan() {
 		p.maxYVelocity = 4.5
 		p.gravityStrength = -0.091
 		p.lastUpdate = performance.now()
-		p.lastBreak = now
-		p.lastPlace = now
-		p.lastJump = now
+		p.lastBreak = currentFrameTimestamp
+		p.lastPlace = currentFrameTimestamp
+		p.lastJump = currentFrameTimestamp
 		p.autoBreak = false
 		p.autoBuild = false
 		p.flying = false
@@ -4151,10 +4152,10 @@ async function MineKhan() {
 			try {
 				let tempWorld = new World(true)
 				tempWorld.loadSave(loadString)
-				addWorld(`${tempWorld.name} (Pre-loaded)`, tempWorld.version, loadString.length, now)
-				worlds[now] = {
+				addWorld(`${tempWorld.name} (Pre-loaded)`, tempWorld.version, loadString.length, currentFrameTimestamp)
+				worlds[currentFrameTimestamp] = {
 					code: loadString,
-					id: now
+					id: currentFrameTimestamp
 				}
 			}
 			catch(e) {
@@ -4438,61 +4439,66 @@ async function MineKhan() {
 		}
 	}
 
-	let prevTime = 0
-	function renderLoop(time) {
-		let frameFPS = Math.round(10000/(time - prevTime)) / 10
-		prevTime = time
+	let previousFrameTimestamp = 0;
+    function renderLoop(frameTimestamp) {
+		const frameDeltaTime = (frameTimestamp - previousFrameTimestamp) / 1000;
+		const fps = 1 / frameDeltaTime;
+        const fpsRounded = Math.round(fps * 10) / 10; // Round to 1 decimal place
 
-		if (!gl && window.innerWidth && window.innerHeight) initEverything()
+        previousFrameTimestamp = frameTimestamp;
 
-		now = Date.now()
-		let frameStart = performance.now()
+		// If window has appropriate size and WebGL is not initialized,
+		// then initialize everything
+        if (!gl && window.innerWidth && window.innerHeight) initEverything();
 
-		if (screen === "play" || screen === "loading") {
-			try {
-				drawScreens[screen]()
-			}
-			catch(e) {
-				console.error(e)
-			}
-		}
-
-		if (screen === "play" && now - analytics.lastUpdate > 500 && analytics.frames) {
-			analytics.displayedTickTime = (analytics.totalTickTime / analytics.ticks).toFixed(1)
-			analytics.displayedRenderTime = (analytics.totalRenderTime / analytics.frames).toFixed(1)
-			analytics.displayedFrameTime = (analytics.totalFrameTime / analytics.frames).toFixed(1)
-			analytics.fps = round(analytics.frames * 1000 / (now - analytics.lastUpdate))
-			analytics.displayedwFrameTime = analytics.worstFrameTime.toFixed(1)
-			analytics.displayedwFps = analytics.worstFps
-			analytics.worstFps = 1000000
-			analytics.frames = 0
-			analytics.totalRenderTime = 0
-			analytics.totalTickTime = 0
-			analytics.ticks = 0
-			analytics.totalFrameTime = 0
-			analytics.worstFrameTime = 0
-			analytics.lastUpdate = now
-			hud()
-		}
-
-		analytics.frames++
-		analytics.totalFrameTime += performance.now() - frameStart
-		analytics.worstFrameTime = max(performance.now() - frameStart, analytics.worstFrameTime)
-		analytics.worstFps = min(frameFPS, analytics.worstFps)
+        currentFrameTimestamp = Date.now();
 		
-		// Request next animation frame
-		window.animationFrameId = requestAnimationFrame(renderLoop);
-	}
-	return renderLoop
+        const frameStartTimestamp = performance.now();
+
+		// Draw screen only if it is 'play' or 'loading'
+        if (screen === 'play' || screen === 'loading') {
+            drawScreens[screen]();
+        }
+
+        if (screen === 'play' && currentFrameTimestamp - analytics.lastUpdate > 500 && analytics.frames) {
+            analytics.displayedTickTime = (analytics.totalTickTime / analytics.ticks).toFixed(1);
+            analytics.displayedRenderTime = (analytics.totalRenderTime / analytics.frames).toFixed(1);
+            analytics.displayedFrameTime = (analytics.totalFrameTime / analytics.frames).toFixed(1);
+            analytics.fps = round((analytics.frames * 1000) / (currentFrameTimestamp - analytics.lastUpdate));
+            analytics.displayedwFrameTime = analytics.worstFrameTime.toFixed(1);
+            analytics.displayedwFps = analytics.worstFps;
+            analytics.worstFps = 1000000;
+            analytics.frames = 0;
+            analytics.totalRenderTime = 0;
+            analytics.totalTickTime = 0;
+            analytics.ticks = 0;
+            analytics.totalFrameTime = 0;
+            analytics.worstFrameTime = 0;
+            analytics.lastUpdate = currentFrameTimestamp;
+            updateHUD();
+        }
+
+		const frameEndTimestamp = performance.now();
+		const totalFrameTime = frameEndTimestamp - frameStartTimestamp;
+
+        analytics.frames++;
+        analytics.totalFrameTime += totalFrameTime;
+        analytics.worstFrameTime = max(totalFrameTime, analytics.worstFrameTime);
+        analytics.worstFps = min(fpsRounded, analytics.worstFps);
+
+        // Request next animation frame
+        window.animationFrameId = requestAnimationFrame(renderLoop);
+    }
+    return renderLoop;
 }
 
-(async function() {
-	// Cancel any animation frames before initialzing anything
-	if (window.animationFrameId) {
-		window.cancelAnimationFrame(window.animationFrameId);
-		console.log("Canceled animation frame with id: " + window.animationFrameId);
-	}
-
-	const init = await MineKhan();
-	init();
-})()
+(async function () {
+    // Cancel any animation frames before initialzing anything
+    if (window.animationFrameId) {
+        window.cancelAnimationFrame(window.animationFrameId);
+        console.log('Canceled animation frame with id: ' + window.animationFrameId);
+    }
+	
+    const init = await MineKhan();
+    init();
+})();

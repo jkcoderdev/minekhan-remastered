@@ -1,0 +1,3 @@
+class GuiScreen {}
+
+export { GuiScreen };

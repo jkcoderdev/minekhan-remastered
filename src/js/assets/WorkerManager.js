@@ -1,0 +1,3 @@
+class WorkerManager {}
+
+export { WorkerManager };

@@ -1,0 +1,3 @@
+class ShaderManager {}
+
+export { ShaderManager };

@@ -1,0 +1,3 @@
+class FontManager {}
+
+export { FontManager };

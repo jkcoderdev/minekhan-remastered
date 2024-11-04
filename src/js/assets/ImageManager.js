@@ -1,0 +1,3 @@
+class ImageManager {}
+
+export { ImageManager };

@@ -10,6 +10,9 @@ class WebGLContext extends CanvasContext {
     constructor(selector) {
         super(selector);
         
+        /**
+         * @type WebGLRenderingContext
+         */
         this.gl = this.canvas.getContext('webgl') || this.canvas.getContext('webgl-experimental');
 
         if (!this.gl) {
@@ -21,6 +24,10 @@ class WebGLContext extends CanvasContext {
         this.on('resize', () => {
             this.gl.viewport(0, 0, this.width, this.height);
         });
+    }
+
+    clear() {
+        this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
     }
 }
 

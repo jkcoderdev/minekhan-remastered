@@ -1,5 +1,9 @@
 import { Dispatcher } from '../events/Dispatcher.js';
 
+String.prototype.capitalize = function() {
+    return this.charAt(0).toUpperCase() + this.slice(1);
+};
+
 class CanvasContextError extends Error {
     constructor(msg) {
         super(msg);
@@ -35,6 +39,16 @@ class CanvasContext extends Dispatcher {
         resizeObserver.observe(this.canvas, { box: 'content-box' });
 
         this.#frameId = requestAnimationFrame((timestamp) => this.#render(timestamp));
+    }
+
+    css(key, value) {
+        const property = key.toLowerCase().split('-').filter(a => a.trim().length).map(((word, index) => index === 0 ? word : word.capitalize())).join('');
+
+        if (typeof this.canvas.style[property] === 'undefined') {
+            throw new CanvasContextError(`CSS property '${property}' doesn't exist`);
+        }
+
+        this.canvas[property] = value;
     }
 
     get width() { this.canvas.width };

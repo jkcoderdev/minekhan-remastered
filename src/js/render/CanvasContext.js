@@ -79,7 +79,7 @@ class CanvasContext extends Dispatcher {
             const displayWidth = Math.round(width * dpr);
             const displayHeight = Math.round(height * dpr);
 
-            canvasToDisplaySizeMap.set(entry.target, [displayWidth, displayHeight]);
+            this.#canvasToDisplaySizeMap.set(entry.target, [displayWidth, displayHeight]);
         }
     }
 
@@ -87,7 +87,7 @@ class CanvasContext extends Dispatcher {
         const [ displayWidth, displayHeight ] = this.#canvasToDisplaySizeMap.get(this.canvas);
 
         // Stop resizing if not needed
-        if (this.canvas.width === displayWidth || this.canvas.height === displayHeight) {
+        if (this.canvas.width === displayWidth && this.canvas.height === displayHeight) {
             return;
         }
 
@@ -101,6 +101,8 @@ class CanvasContext extends Dispatcher {
         this.#resizeCanvasToDisplaySize();
 
         const frameDeltaTime = (frameTimestamp - this.#previousFrameTimestamp) / 1000;
+        this.#previousFrameTimestamp = frameTimestamp;
+
 		const fps = 1 / frameDeltaTime;
 
         this.emit('frame', {
@@ -108,7 +110,7 @@ class CanvasContext extends Dispatcher {
             fps: fps
         });
 
-        this.#frameId = requestAnimationFrame((timestamp) => this.render(timestamp));
+        this.#frameId = requestAnimationFrame((timestamp) => this.#render(timestamp));
         return this.#frameId;
     }
 
@@ -117,4 +119,4 @@ class CanvasContext extends Dispatcher {
     }
 }
 
-export { CanvasContext as WebGLContext };
+export { CanvasContext };

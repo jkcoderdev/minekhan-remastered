@@ -30,7 +30,6 @@ class ShaderManager {
     }
 
     async loadAll(shaders) {
-        console.log(shaders)
         const isArray = typeof shaders === 'object' && typeof shaders.length === 'number';
         if (!isArray) {
             throw new Error(`Please provide an array`);
@@ -53,6 +52,16 @@ class ShaderManager {
         }
 
         return this.#shaders.get(name);
+    }
+
+    forEach(callback) {
+        const names = this.#shaders.keys();
+
+        for (const name of names) {
+            const shader = this.#shaders.get(name);
+
+            callback(shader, name);
+        }
     }
 }
 

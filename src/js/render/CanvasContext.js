@@ -51,8 +51,8 @@ class CanvasContext extends Dispatcher {
         this.canvas[property] = value;
     }
 
-    get width() { this.canvas.width };
-    get height() { this.canvas.height };
+    get width() { return this.canvas.width };
+    get height() { return this.canvas.height };
 
     #onResize(entries) {
         for (const entry of entries) {

@@ -1,7 +1,12 @@
+import { disableZoom } from './utils/disableZoom.js';
+
 import { WebGLContext } from './render/webgl/WebGLContext.js';
 import { FlatContext } from './render/2d/FlatContext.js';
 
 import { AssetsManager } from './assets/AssetsManager.js';
+
+// Prevent user from zooming in on the website
+disableZoom();
 
 const loading = document.querySelector('#loading');
 
@@ -36,4 +41,8 @@ const overlayContext = new FlatContext('canvas#overlay');
     console.log(images),
     console.log(shaders);
     console.log(workers);
+
+    overlayContext.on('frame', () => {
+        overlayContext.backgroundImage(images.get('landscape'));
+    });
 })();

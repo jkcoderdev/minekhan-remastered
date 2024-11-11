@@ -8,6 +8,11 @@
     user-select: none;
 }
 
+html, body {
+    /* Disable zoom on mobile devices */
+    touch-action: none;
+}
+
 body, .container {
     background-color: #121212;
 }

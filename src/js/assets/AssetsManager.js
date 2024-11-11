@@ -17,13 +17,20 @@ class AssetsManager {
     }
 
     addImage(name, path) {
-        const url = 'src/assets/images/' + path;
+        const url = 'src/assets/images/' + path.replace(/^\/+/g, '');
         this.#imagesQueue.push({ name, url });
-        console.log(this.#imagesQueue);
+    }
+
+    addShader(name, path) {
+        const url = 'src/assets/shaders/' + path.replace(/^\/+|\/$/g, '') + '/';
+        const vertUrl = url + 'vert.glsl';
+        const fragUrl = url + 'frag.glsl';
+        this.#shadersQueue.push({ name, vertUrl, fragUrl });
     }
 
     async loadEverything() {
         await this.images.loadAll(this.#imagesQueue);
+        await this.shaders.loadAll(this.#shadersQueue);
 
         this.#fontsQueue = [];
         this.#imagesQueue = [];

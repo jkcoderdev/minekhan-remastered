@@ -6,7 +6,13 @@ import { AssetsManager } from './assets/AssetsManager.js';
 const loading = document.querySelector('#loading');
 
 const assets = new AssetsManager();
+
+// Images
 assets.addImage('landscape', 'minekhan-landscape.png');
+
+// Shaders
+assets.addShader('2d', '2d');
+assets.addShader('block', 'block');
 
 const webglContext = new WebGLContext('canvas#webgl');
 const overlayContext = new FlatContext('canvas#overlay');

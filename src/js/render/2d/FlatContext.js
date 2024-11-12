@@ -29,6 +29,14 @@ class FlatContext extends CanvasContext {
         this.ctx.clearRect(0, 0, this.width, this.height);
     }
 
+    saveState() {
+        this.ctx.save();
+    }
+
+    restoreState() {
+        this.ctx.restore();
+    }
+
     fillColor(r, g, b, a=1) {
         this.ctx.fillStyle = rgbaString(r, g, b, a);
     }

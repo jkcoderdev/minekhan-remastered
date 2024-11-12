@@ -1,8 +1,8 @@
 class FontManager {
     async load(name, url) {
-        const fontAlreadyLoaded = document.fonts.check(`10px ${name}`);
-        if (fontAlreadyLoaded) {
-            throw new Error(`Font named ${name} already loaded`);
+        const exists = Array.from(document.fonts).some(({ family }) => name === family);
+        if (exists) {
+            throw new Error(`Font named '${name}' already exists`);
         }
 
         const font = new FontFace(name, `url(${url})`);

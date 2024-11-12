@@ -12,6 +12,9 @@ const loading = document.querySelector('#loading');
 
 const assets = new AssetsManager();
 
+// Fonts
+assets.addFont('MinecraftCHMC', 'minecraftchmc/MinecraftCHMC.ttf');
+
 // Images
 assets.addImage('landscape', 'minekhan-landscape.png');
 
@@ -44,5 +47,14 @@ const overlayContext = new FlatContext('canvas#overlay');
 
     overlayContext.on('frame', () => {
         overlayContext.backgroundImage(images.get('landscape'));
+
+        const { width, height } = overlayContext;
+
+        overlayContext.fontFamily('MinecraftCHMC');
+        overlayContext.textAlign('center');
+        overlayContext.textBaseline('middle');
+        overlayContext.fontSize(128);
+        overlayContext.fillColor('#aaaaaa');
+        overlayContext.text('Hello World', width / 2, height / 2);
     });
 })();

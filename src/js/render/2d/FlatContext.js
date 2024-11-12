@@ -5,6 +5,35 @@ function rgbaString(r, g, b, a) {
     return `rgba(${minmax(0, 255, r * 255) | 0}, ${minmax(0, 255, g * 255) | 0}, ${minmax(0, 255, b * 255) | 0}, ${minmax(0.0, 1.0, a)})`;
 }
 
+function colorString(colorData) {
+    const isArray = typeof colorData === 'object' && typeof colorData.length === 'number';
+    if (!isArray) {
+        throw new Error(`Please provide an array`);
+    }
+
+    if (colorData.length === 0) {
+        throw new Error('Please provide color data. Color data array cannot be empty.');
+    }
+
+    if (colorData.length === 1 && typeof colorData[0] === 'string') {
+        const validColorPattern = /^(#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})\b)|((rgb|hsl)a?\(\s*(\d{1,3}%?\s*,\s*){2}\d{1,3}%?\s*(,\s*(0|1|0?\.\d+)\s*)?\))|([a-zA-Z]+)$/;
+        if (!validColorPattern.test(colorData[0])) {
+            throw new Error('Please provide correct color string');
+        }
+
+        return colorData[0];
+    } else if (colorData.length === 3 || colorData.length === 4) {
+        try {
+            const color = colorData.map(Number);
+            return rgbaString(...color);
+        } catch (e) {
+            throw new Error('Please provide correct color data');
+        }
+    }
+
+    throw new Error('Please provide correct color data');
+}
+
 class FlatContext extends CanvasContext {
     #fontSize = 12;
     #fontFamily = 'sans-serif';
@@ -22,7 +51,7 @@ class FlatContext extends CanvasContext {
     }
 
     #updateFontProperties() {
-        this.ctx.font = `${this.#fontStyle ?? ''} ${this.#fontSize}px ${this.#fontFamily}`.trim();
+        this.ctx.font = `${this.#fontStyle ?? ''} ${this.#fontSize}px '${this.#fontFamily}'`.trim();
     }
 
     clear() {
@@ -37,12 +66,14 @@ class FlatContext extends CanvasContext {
         this.ctx.restore();
     }
 
-    fillColor(r, g, b, a=1) {
-        this.ctx.fillStyle = rgbaString(r, g, b, a);
+    fillColor(...colorData) {
+        const color = colorString(colorData);
+        this.ctx.fillStyle = color;
     }
 
-    strokeColor(r, g, b, a=1) {
-        this.ctx.strokeStyle = rgbaString(r, g, b, a);
+    strokeColor(...colorData) {
+        const color = colorString(colorData);
+        this.ctx.strokeStyle = color;
     }
 
     rect(x, y, width, height) {
@@ -86,8 +117,12 @@ class FlatContext extends CanvasContext {
         this.#updateFontProperties();
     }
 
-    backgroundColor(r, g, b, a=1) {
-        this.fillColor(r, g, b, a);
+    text(text, x, y) {
+        this.ctx.fillText(text, x, y);
+    }
+
+    backgroundColor(...colorData) {
+        this.fillColor(...colorData);
         this.ctx.fillRect(0, 0, this.width, this.height);
     }
 

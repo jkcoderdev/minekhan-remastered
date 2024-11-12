@@ -1,3 +1,0 @@
-class FontRenderer {}
-
-export { FontRenderer };

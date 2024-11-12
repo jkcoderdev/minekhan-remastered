@@ -28,7 +28,13 @@ class AssetsManager {
         this.#shadersQueue.push({ name, vertUrl, fragUrl });
     }
 
+    addFont(name, path) {
+        const url = 'src/assets/fonts/' + path.replace(/^\/+/g, '');
+        this.#fontsQueue.push({ name, url });
+    }
+
     async loadEverything() {
+        await this.fonts.loadAll(this.#fontsQueue);
         await this.images.loadAll(this.#imagesQueue);
         await this.shaders.loadAll(this.#shadersQueue);
 

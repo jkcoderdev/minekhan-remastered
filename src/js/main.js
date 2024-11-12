@@ -25,6 +25,9 @@ assets.addShader('block-fogless', 'block-fogless');
 assets.addShader('entity', 'entity');
 assets.addShader('sky', 'sky');
 
+// Workers
+assets.addWorker('caves', 'Caves.js');
+
 const webglContext = new WebGLContext('canvas#webgl');
 const overlayContext = new FlatContext('canvas#overlay');
 

@@ -33,10 +33,16 @@ class AssetsManager {
         this.#fontsQueue.push({ name, url });
     }
 
+    addWorker(name, path) {
+        const url = 'src/workers/' + path.replace(/^\/+/g, '');
+        this.#workersQueue.push({ name, url });
+    }
+
     async loadEverything() {
         await this.fonts.loadAll(this.#fontsQueue);
         await this.images.loadAll(this.#imagesQueue);
         await this.shaders.loadAll(this.#shadersQueue);
+        await this.workers.loadAll(this.#workersQueue);
 
         this.#fontsQueue = [];
         this.#imagesQueue = [];

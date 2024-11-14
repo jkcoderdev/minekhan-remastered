@@ -38,4 +38,7 @@ const renderer = new Renderer('#overlay', '#webgl');
 
     // Compile all shaders
     renderer.compileShaders(shaders);
+
+    // Make images accessible from renderer object
+    renderer.storeImages(images);
 })();

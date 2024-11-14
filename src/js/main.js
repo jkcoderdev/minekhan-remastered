@@ -1,7 +1,6 @@
 import { disableZoom } from './utils/disableZoom.js';
 
-import { WebGLContext } from './render/webgl/WebGLContext.js';
-import { FlatContext } from './render/2d/FlatContext.js';
+import { Renderer } from './render/Renderer.js';
 
 import { AssetsManager } from './assets/AssetsManager.js';
 
@@ -28,8 +27,7 @@ assets.addShader('sky', 'sky');
 // Workers
 assets.addWorker('caves', 'Caves.js');
 
-const webglContext = new WebGLContext('canvas#webgl');
-const overlayContext = new FlatContext('canvas#overlay');
+const renderer = new Renderer('#overlay', '#webgl');
 
 (async function() {
     const { fonts, images, shaders, workers } = await assets.loadEverything();
@@ -39,25 +37,5 @@ const overlayContext = new FlatContext('canvas#overlay');
     loadingDisapearAnimation.addEventListener('finish', () => loading.remove());
 
     // Compile all shaders
-    shaders.forEach((shader, name) => {
-        webglContext.compileShader(name, shader);
-    });
-
-    console.log(fonts);
-    console.log(images),
-    console.log(shaders);
-    console.log(workers);
-
-    overlayContext.on('frame', () => {
-        overlayContext.backgroundImage(images.get('landscape'));
-
-        const { width, height } = overlayContext;
-
-        overlayContext.fontFamily('MinecraftCHMC');
-        overlayContext.textAlign('center');
-        overlayContext.textBaseline('middle');
-        overlayContext.fontSize(128);
-        overlayContext.fillColor('#aaaaaa');
-        overlayContext.text('Hello World', width / 2, height / 2);
-    });
+    renderer.compileShaders(shaders);
 })();

@@ -1,3 +1,0 @@
-class GuiRenderer {}
-
-export { GuiRenderer };

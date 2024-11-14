@@ -3,6 +3,9 @@ import { disableZoom } from './utils/disableZoom.js';
 import { Renderer } from './render/Renderer.js';
 
 import { AssetsManager } from './assets/AssetsManager.js';
+import { GuiRenderer } from './render/GuiRenderer.js';
+
+import { MainMenuScreen } from './gui/screens/MainMenuScreen.js';
 
 // Prevent user from zooming in on the website
 disableZoom();
@@ -28,6 +31,7 @@ assets.addShader('sky', 'sky');
 assets.addWorker('caves', 'Caves.js');
 
 const renderer = new Renderer('#overlay', '#webgl');
+const gui = new GuiRenderer(renderer);
 
 (async function() {
     const { images, shaders, workers } = await assets.loadEverything();
@@ -41,4 +45,6 @@ const renderer = new Renderer('#overlay', '#webgl');
 
     // Make images accessible from renderer object
     renderer.storeImages(images);
+
+    gui.setScreen(new MainMenuScreen());
 })();

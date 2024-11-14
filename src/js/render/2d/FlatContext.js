@@ -39,6 +39,8 @@ class FlatContext extends CanvasContext {
     #fontFamily = 'sans-serif';
     #fontStyle = null;
 
+    #savedStates = 0;
+
     constructor(selector) {
         super(selector);
 
@@ -48,6 +50,8 @@ class FlatContext extends CanvasContext {
         this.ctx = this.canvas.getContext('2d');
 
         this.#updateFontProperties();
+
+        this.saveState();
     }
 
     #updateFontProperties() {
@@ -58,12 +62,34 @@ class FlatContext extends CanvasContext {
         this.ctx.clearRect(0, 0, this.width, this.height);
     }
 
+    reset() {
+        for (let i = 0; i < this.#savedStates; i++) {
+            this.ctx.restore();
+        }
+
+        this.#savedStates = 0;
+
+        this.#fontSize = 12;
+        this.#fontFamily = 'sans-serif';
+        this.#fontStyle = null;
+
+        this.saveState();
+
+        this.clear();
+    }
+
     saveState() {
         this.ctx.save();
+        this.#savedStates++;
     }
 
     restoreState() {
+        if (this.#savedStates === 0) {
+            throw new Error(`You can't restore a non saved state`);
+        }
+
         this.ctx.restore();
+        this.#savedStates--;
     }
 
     fillColor(...colorData) {

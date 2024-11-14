@@ -1,5 +1,9 @@
 import { GuiScreen } from '../GuiScreen.js';
 
-class MultiplayerScreen extends GuiScreen {}
+class MultiplayerScreen extends GuiScreen {
+    constructor() {
+        super();
+    }
+}
 
 export { MultiplayerScreen };

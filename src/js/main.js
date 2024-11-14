@@ -30,7 +30,7 @@ assets.addWorker('caves', 'Caves.js');
 const renderer = new Renderer('#overlay', '#webgl');
 
 (async function() {
-    const { fonts, images, shaders, workers } = await assets.loadEverything();
+    const { images, shaders, workers } = await assets.loadEverything();
 
     // All assets are loaded so remove loading screen
     const loadingDisapearAnimation = loading.animate({ opacity: 0 }, { duration: 500 });

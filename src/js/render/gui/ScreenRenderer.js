@@ -1,3 +1,0 @@
-class ScreenRenderer {}
-
-export { ScreenRenderer };

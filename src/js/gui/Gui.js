@@ -1,3 +1,0 @@
-class Gui {}
-
-export { Gui };

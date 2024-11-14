@@ -1,0 +1,3 @@
+class GuiRenderer {}
+
+export { GuiRenderer };

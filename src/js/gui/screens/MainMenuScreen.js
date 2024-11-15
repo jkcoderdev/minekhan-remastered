@@ -26,12 +26,6 @@ class MainMenuScreen extends GuiScreen {
         const landscapeImage = images.get('landscape');
         this.backgroundImage = landscapeImage;
     }
-
-    render(renderer) {
-        super.render(renderer);
-
-        this.renderComponents(renderer);
-    }
 }
 
 export { MainMenuScreen };

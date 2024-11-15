@@ -11,6 +11,7 @@ class GuiRenderer {
             if (this.currentScreen) {
                 const screen = this.currentScreen;
                 screen.render(renderer);
+                screen.renderComponents(renderer);
             }
         });
     }

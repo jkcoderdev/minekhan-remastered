@@ -152,24 +152,28 @@ class FlatContext extends CanvasContext {
         this.ctx.fillRect(0, 0, this.width, this.height);
     }
 
-    backgroundImage(image) {
+    image(image, x, y, width, height) {
         const imageAspectRatio = image.width / image.height;
-        const canvasAspectRatio = this.width / this.height;
+        const viewAspectRatio = width / height;
+        
+        let imageX = 0;
+        let imageY = 0;
+        let imageWidth = image.width;
+        let imageHeight = image.height;
 
-        let x = 0;
-        let y = 0;
-        let width = this.width;
-        let height = this.height;
-
-        if (imageAspectRatio > canvasAspectRatio) {
-            width = height * imageAspectRatio;
-            x = -(width - this.width) / 2;
+        if (imageAspectRatio > viewAspectRatio) {
+            imageWidth *= viewAspectRatio / imageAspectRatio;
+            imageX = (image.width - imageWidth) / 2;
         } else {
-            height = width / imageAspectRatio;
-            y = -(height - this.height) / 2;
+            imageHeight *= imageAspectRatio / viewAspectRatio;
+            imageY = (image.height - imageHeight) / 2;
         }
 
-        this.ctx.drawImage(image, x, y, width, height);
+        this.ctx.drawImage(image, imageX, imageY, imageWidth, imageHeight, x, y, width, height);
+    }
+    
+    backgroundImage(image) {
+        this.image(image, 0, 0, this.width, this.height);
     }
 }
 

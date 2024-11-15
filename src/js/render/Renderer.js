@@ -34,6 +34,14 @@ class Renderer {
             webglContext.compileShader(name, shader);
         });
     }
+    
+    get width() {
+        return this.overlayContext.width;
+    }
+    
+    get height() {
+        return this.overlayContext.height;
+    }
 
     get images() {
         return this.#images;

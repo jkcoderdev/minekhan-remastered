@@ -16,7 +16,7 @@ class Container extends GuiComponent {
 
         this.backgroundColor = _options.backgroundColor;
         
-        this.child = null;
+        this.child = _options.child;
     }
     
     render(renderer, parent) {

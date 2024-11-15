@@ -2,8 +2,6 @@ import { GuiScreen } from '../GuiScreen.js';
 
 import { Container } from '../components/Container.js';
 
-import { HexColor } from '../../utils/colors.js';
-
 class MainMenuScreen extends GuiScreen {
     constructor() {
         super();

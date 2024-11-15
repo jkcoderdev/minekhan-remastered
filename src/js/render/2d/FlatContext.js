@@ -92,14 +92,12 @@ class FlatContext extends CanvasContext {
         this.#savedStates--;
     }
 
-    fillColor(...colorData) {
-        const color = colorString(colorData);
-        this.ctx.fillStyle = color;
+    fillColor(color) {
+        this.ctx.fillStyle = color.toString();
     }
 
-    strokeColor(...colorData) {
-        const color = colorString(colorData);
-        this.ctx.strokeStyle = color;
+    strokeColor(color) {
+        this.ctx.strokeStyle = color.toString();
     }
 
     rect(x, y, width, height) {

@@ -2,12 +2,16 @@ import { GuiScreen } from '../GuiScreen.js';
 
 import { Container } from '../components/Container.js';
 
+import { HexColor } from '../../utils/colors.js';
+
 class MainMenuScreen extends GuiScreen {
     constructor() {
         super();
         
         this.components = [
-            new Container()
+            new Container({
+                padding: 16
+            })
         ];
     }
 
@@ -25,8 +29,8 @@ class MainMenuScreen extends GuiScreen {
 
     render(renderer) {
         super.render(renderer);
-        
-        const ctx = renderer.overlay;
+
+        this.renderComponents(renderer);
     }
 }
 

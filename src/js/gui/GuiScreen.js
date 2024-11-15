@@ -26,7 +26,7 @@ class GuiScreen {
         
         if (this.backgroundColor) {
             const color = this.backgroundColor;
-            ctx.fillColor(color);
+            ctx.fillColor(color.toString());
             ctx.rect(0, 0, renderer.width, renderer.height);
             ctx.fill();
         }
@@ -35,7 +35,9 @@ class GuiScreen {
             const image = this.backgroundImage;
             ctx.backgroundImage(image);
         }
-        
+    }
+
+    renderComponents(renderer) {
         for (const component of this.components) {
             component.render(renderer, {
                 view: {

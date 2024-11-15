@@ -4,28 +4,41 @@ class Container extends GuiComponent {
     constructor(options={}) {
         super();
         
-        const {} = Object.assign({
+        const _options = Object.assign({
             child: null,
             padding: 0,
-            margin:0
+            margin: 0,
+            backgroundColor: null
         }, options);
         
-        this.padding = 0;
-        this.margin = 0;
+        this.padding = _options.padding;
+        this.margin = _options.margin;
+
+        this.backgroundColor = _options.backgroundColor;
         
         this.child = null;
     }
     
     render(renderer, parent) {
         super.render(renderer, parent);
+
+        const ctx = renderer.overlay;
+
+        const view = parent.view;
+
+        if (this.backgroundColor) {
+            ctx.fillColor(this.backgroundColor);
+            ctx.rect(view.x + this.margin, view.y + this.margin, view.width - this.margin * 2, view.height - this.margin * 2);
+            ctx.fill();
+        }
     
-        if (this.child != null) {
+        if (this.child) {
             this.child.render(renderer, {
                 view: {
-                    x: parent.view.x + this.padding + this.margin,
-                    y: parent.view.y + this.padding + this.margin,
-                    width: parent.view.width - (this.padding + this.margin) * 2,
-                    height: parent.view.height - (this.padding + this.margin) * 2
+                    x: view.x + this.padding + this.margin,
+                    y: view.y + this.padding + this.margin,
+                    width: view.width - (this.padding + this.margin) * 2,
+                    height: view.height - (this.padding + this.margin) * 2
                 }
             });
         }

@@ -22,6 +22,7 @@ class GuiRenderer {
         }
 
         if (this.currentScreen) {
+            this.currentScreen.dispatchComponents(this.renderer);
             this.currentScreen.dispatch(this.renderer);
         }
 

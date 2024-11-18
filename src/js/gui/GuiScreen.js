@@ -49,6 +49,12 @@ class GuiScreen {
             });
         }
     }
+
+    dispatchComponents() {
+        for (const component of this.components) {
+            component.dispatch(renderer);
+        }
+    }
 }
 
 export { GuiScreen };

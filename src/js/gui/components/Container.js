@@ -11,7 +11,8 @@ class Container extends GuiComponent {
             width: null,
             height: null,
             backgroundColor: null,
-            backdropBlur: null
+            backdropBlur: null,
+            backdropBrightness: null,
         }, options);
         
         this.padding = _options.padding;
@@ -22,6 +23,7 @@ class Container extends GuiComponent {
 
         this.backgroundColor = _options.backgroundColor;
         this.backdropBlur = _options.backdropBlur;
+        this.backdropBrightness = _options.backdropBrightness;
         
         this.child = _options.child;
     }
@@ -46,9 +48,10 @@ class Container extends GuiComponent {
         const width = view.width - this.margin * 2;
         const height = view.height - this.margin * 2;
 
-        if (this.backdropBlur) {
+        if (this.backdropBlur || this.backdropBrightness) {
             ctx.filterArea(x, y, width, height, () => {
-                ctx.blur(this.backdropBlur);
+                if (this.backdropBlur !== null) ctx.blur(this.backdropBlur);
+                if (this.backdropBrightness !== null) ctx.brightness(this.backdropBrightness);
             });
         }
 

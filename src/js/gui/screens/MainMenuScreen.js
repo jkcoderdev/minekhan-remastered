@@ -17,22 +17,18 @@ class MainMenuScreen extends GuiScreen {
                         new Container({
                             backgroundColor: new HexColor('#ff000044'),
                             height: 128,
-                            backdropBlur: 16
                         }),
                         new Container({
                             backgroundColor: new HexColor('#ffff0044'),
                             height: 128,
-                            backdropBlur: 16
                         }),
                         new Container({
                             backgroundColor: new HexColor('#00ff0044'),
                             height: 128,
-                            backdropBlur: 16
                         }),
                         new Container({
                             backgroundColor: new HexColor('#0000ff44'),
                             height: 128,
-                            backdropBlur: 16
                         }),
                     ],
                     gap: 16

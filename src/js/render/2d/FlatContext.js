@@ -109,7 +109,14 @@ class FlatContext extends CanvasContext {
 
         filterFunction(this);
 
-        this.ctx.drawImage(offsetCanvas, x, y);
+        offsetContext.filter = this.ctx.filter;
+        offsetContext.drawImage(offsetCanvas, 0, 0);
+
+        const processedImageData = offsetContext.getImageData(0, 0, width, height);
+
+        this.ctx.putImageData(processedImageData, x, y);
+
+        this.#filter.clear();
 
         this.ctx.restore();
     }
@@ -119,17 +126,31 @@ class FlatContext extends CanvasContext {
             const value = this.#filter.get(key);
 
             return `${key}(${value})`;
-        });
+        }).join(' ');
     }
 
     blur(value) {
-        if (!value && this.#filter.has('blur')) {
+        if (value === null && this.#filter.has('blur')) {
             this.#filter.delete('blur');
         } else {
             this.#filter.set('blur', `${value}px`);
         }
 
         this.#updateFilter();
+    }
+
+    brightness(value) {
+        console.log(value);
+        if (value === null && this.#filter.has('brightness')) {
+            this.#filter.delete('brightness');
+        } else {
+            console.log(value);
+            this.#filter.set('brightness', `${value}`);
+        }
+
+        this.#updateFilter();
+
+        console.log(this.ctx.filter);
     }
 
     fillColor(color) {

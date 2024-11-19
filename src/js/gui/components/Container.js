@@ -8,15 +8,28 @@ class Container extends GuiComponent {
             child: null,
             padding: 0,
             margin: 0,
-            backgroundColor: null
+            backgroundColor: null,
+            width: null,
+            height: null
         }, options);
         
         this.padding = _options.padding;
         this.margin = _options.margin;
 
+        this.width = _options.width;
+        this.height = _options.height;
+
         this.backgroundColor = _options.backgroundColor;
         
         this.child = _options.child;
+    }
+
+    dispatch(renderer) {
+        super.dispatch(renderer);
+
+        if (this.child) {
+            this.child.dispatch(renderer);
+        }
     }
     
     render(renderer, parent) {

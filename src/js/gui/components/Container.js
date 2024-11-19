@@ -8,9 +8,10 @@ class Container extends GuiComponent {
             child: null,
             padding: 0,
             margin: 0,
-            backgroundColor: null,
             width: null,
-            height: null
+            height: null,
+            backgroundColor: null,
+            backdropBlur: null
         }, options);
         
         this.padding = _options.padding;
@@ -20,6 +21,7 @@ class Container extends GuiComponent {
         this.height = _options.height;
 
         this.backgroundColor = _options.backgroundColor;
+        this.backdropBlur = _options.backdropBlur;
         
         this.child = _options.child;
     }
@@ -39,19 +41,30 @@ class Container extends GuiComponent {
 
         const view = parent.view;
 
+        const x = view.x + this.margin;
+        const y = view.y + this.margin;
+        const width = view.width - this.margin * 2;
+        const height = view.height - this.margin * 2;
+
+        if (this.backdropBlur) {
+            ctx.filterArea(x, y, width, height, () => {
+                ctx.blur(this.backdropBlur);
+            });
+        }
+
         if (this.backgroundColor) {
             ctx.fillColor(this.backgroundColor);
-            ctx.rect(view.x + this.margin, view.y + this.margin, view.width - this.margin * 2, view.height - this.margin * 2);
+            ctx.rect(x, y, width, height);
             ctx.fill();
         }
     
         if (this.child) {
             this.child.render(renderer, {
                 view: {
-                    x: view.x + this.padding + this.margin,
-                    y: view.y + this.padding + this.margin,
-                    width: view.width - (this.padding + this.margin) * 2,
-                    height: view.height - (this.padding + this.margin) * 2
+                    x: x + this.padding,
+                    y: y + this.padding,
+                    width: width - this.padding * 2,
+                    height: height - this.padding * 2
                 }
             });
         }

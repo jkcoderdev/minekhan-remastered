@@ -39,6 +39,8 @@ class FlatContext extends CanvasContext {
     #fontFamily = 'sans-serif';
     #fontStyle = null;
 
+    #filter = new Map();
+
     #savedStates = 0;
 
     constructor(selector) {
@@ -47,7 +49,7 @@ class FlatContext extends CanvasContext {
         /**
          * @type CanvasRenderingContext2D
          */
-        this.ctx = this.canvas.getContext('2d');
+        this.ctx = this.canvas.getContext('2d', { willReadFrequently: true });
 
         this.#updateFontProperties();
 
@@ -90,6 +92,44 @@ class FlatContext extends CanvasContext {
 
         this.ctx.restore();
         this.#savedStates--;
+    }
+
+    filterArea(x, y, width, height, filterFunction) {
+        this.ctx.save();
+
+        const imageData = this.ctx.getImageData(x, y, width, height);
+
+        const offsetCanvas = document.createElement('canvas');
+        const offsetContext = offsetCanvas.getContext('2d');
+
+        offsetCanvas.width = width;
+        offsetCanvas.height = height;
+        
+        offsetContext.putImageData(imageData, 0, 0);
+
+        filterFunction(this);
+
+        this.ctx.drawImage(offsetCanvas, x, y);
+
+        this.ctx.restore();
+    }
+
+    #updateFilter() {
+        this.ctx.filter = Array.from(this.#filter.keys()).map(key => {
+            const value = this.#filter.get(key);
+
+            return `${key}(${value})`;
+        });
+    }
+
+    blur(value) {
+        if (!value && this.#filter.has('blur')) {
+            this.#filter.delete('blur');
+        } else {
+            this.#filter.set('blur', `${value}px`);
+        }
+
+        this.#updateFilter();
     }
 
     fillColor(color) {

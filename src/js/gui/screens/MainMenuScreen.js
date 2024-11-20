@@ -10,43 +10,46 @@ class MainMenuScreen extends GuiScreen {
     constructor() {
         super();
         
-        this.components = [
-            new Container({
-                margin: 32,
-                child: new VerticalLayout({
-                    children: [
-                        new Container({
-                            backgroundColor: new HexColor('#ff000044'),
-                            height: 128,
-                        }),
-                        // new Text({
-                        //     text: 'Hello World'
-                        // }),
-                        new Container({
-                            backgroundColor: new HexColor('#ffff0044'),
-                            height: 128,
-                        }),
-                        new Container({
-                            backgroundColor: new HexColor('#00ff0044'),
-                            height: 128,
-                        }),
-                    ],
-                    gap: 16
-                }),
+        this.layout = new Container({
+            margin: 32,
+            child: new VerticalLayout({
+                gap: 8,
+                children: [
+                    new Container({
+                        height: 128,
+                        backgroundColor: new HexColor('#f004')
+                    }),
+                    new Container({
+                        height: 64,
+                        backgroundColor: new HexColor('#0f04')
+                    }),
+                    new Container({
+                        height: 32,
+                        backgroundColor: new HexColor('#00f4')
+                    }),
+                    new Text({
+                        text: 'Hello World',
+                        color: new HexColor('#fff')
+                    }),
+                ],
             })
-        ];
+        });
     }
 
-    init(renderer) {
-        super.init(renderer);
+    init(context) {
+        super.init(context);
         
-        const ctx = renderer.overlay;
-        const images = renderer.images;
+        const ctx = context.overlayContext;
+        const images = context.images;
         
         ctx.fontFamily('MinecraftCHMC');
         
         const landscapeImage = images.get('landscape');
         this.backgroundImage = landscapeImage;
+    }
+
+    render(context) {
+        super.render(context);
     }
 }
 

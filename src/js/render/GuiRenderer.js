@@ -1,17 +1,25 @@
+import { GuiContext } from '../gui/GuiContext.js';
+
 import { GuiScreen } from '../gui/GuiScreen.js';
 
 class GuiRenderer {
     constructor(renderer) {
         this.renderer = renderer;
 
+        this.context = new GuiContext(renderer);
+
         this.currentScreen = null;
 
         const ctx = renderer.overlay;
+
+        ctx.on('resize', () => {
+            this.context = new GuiContext(renderer);
+        });
+
         ctx.on('frame', () => {
             if (this.currentScreen) {
                 const screen = this.currentScreen;
-                screen.render(renderer);
-                screen.renderComponents(renderer);
+                screen.render(this.context);
             }
         });
     }
@@ -22,12 +30,11 @@ class GuiRenderer {
         }
 
         if (this.currentScreen) {
-            this.currentScreen.dispatchComponents(this.renderer);
-            this.currentScreen.dispatch(this.renderer);
+            this.currentScreen.dispatch(this.context);
         }
 
         this.currentScreen = screen;
-        screen.init(this.renderer);
+        screen.init(this.context);
     }
 }
 

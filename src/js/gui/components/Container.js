@@ -1,51 +1,40 @@
 import { GuiComponent } from '../GuiComponent.js';
 
+import { Size } from '../../utils/enums.js';
+
 class Container extends GuiComponent {
-    constructor(options={}) {
-        super();
+    constructor(options) {
+        super(options);
         
-        const _options = Object.assign({
-            child: null,
-            padding: 0,
+        this.optionsManager.setOptions({
+            width: Size.matchParent,
+            height: Size.matchParent,
             margin: 0,
-            width: null,
-            height: null,
+            padding: 0,
             backgroundColor: null,
             backdropBlur: null,
-            backdropBrightness: null,
-        }, options);
+            backdropBrightness: null
+        });
+
+        const _options = this.optionsManager.loadFromObject(options);
+
+        this.width = _options.width;
+        this.height = _options.height;
         
         this.padding = _options.padding;
         this.margin = _options.margin;
 
-        this.width = _options.width;
-        this.height = _options.height;
-
         this.backgroundColor = _options.backgroundColor;
         this.backdropBlur = _options.backdropBlur;
         this.backdropBrightness = _options.backdropBrightness;
-        
-        this.child = _options.child;
-    }
-
-    init(renderer, parent) {
-        
-    }
-
-    dispatch(renderer) {
-        super.dispatch(renderer);
-
-        if (this.child) {
-            this.child.dispatch(renderer);
-        }
     }
     
-    render(renderer, parent) {
-        super.render(renderer, parent);
+    render(context) {
+        super.render(context);
 
-        const ctx = renderer.overlay;
+        const ctx = context.overlayContext;
 
-        const view = parent.view;
+        const view = context.view;
 
         const x = view.x + this.margin;
         const y = view.y + this.margin;
@@ -66,14 +55,14 @@ class Container extends GuiComponent {
         }
     
         if (this.child) {
-            this.child.render(renderer, {
-                view: {
-                    x: x + this.padding,
-                    y: y + this.padding,
-                    width: width - this.padding * 2,
-                    height: height - this.padding * 2
-                }
-            });
+            const childView = {
+                x: x + this.padding,
+                y: y + this.padding,
+                width: width - this.padding * 2,
+                height: height - this.padding * 2
+            };
+
+            this.renderComponent(context.withView(childView), this.child);
         }
     }
 }

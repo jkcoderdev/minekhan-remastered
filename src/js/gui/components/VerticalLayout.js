@@ -1,54 +1,43 @@
+import { Size } from '../../utils/enums.js';
 import { GuiComponent } from '../GuiComponent.js';
 
 class VerticalLayout extends GuiComponent {
-    constructor(options={}) {
-        super();
+    constructor(options) {
+        super(options);
 
-        const _options = Object.assign({
-            children: [],
+        this.optionsManager.setOptions({
+            width: Size.matchParent,
+            height: Size.matchParent,
             gap: 0,
-        }, options);
+        });
 
-        this.children = _options.children;
+        const _options = this.optionsManager.loadFromObject(options);
+
+        this.width = _options.width;
+        this.height = _options.height;
 
         this.gap = _options.gap;
-        this.fullWidth = _options.fullWidth;
     }
 
-    dispatch(renderer) {
-        super.dispatch(renderer);
+    render(context) {
+        super.render(context);
 
-        for (const child of this.children) {
-            child.dispatch(renderer);
-        }
-    }
-
-    render(renderer, parent) {
-        super.render(renderer, parent);
-
-        const view = parent.view;
+        const view = context.view;
 
         let y = 0;
 
         for (const child of this.children) {
-            const size = child.getSize(view);
+            const size = child.measure(context);
+            const childView = {
+                x: view.x,
+                y: view.y + y,
+                width: size.width,
+                height: size.height,
+            };
 
-            child.render(renderer, {
-                view: {
-                    x: view.x,
-                    y: view.y + y,
-                    width: size.width,
-                    height: size.height,
-                }
-            });
+            this.renderComponent(context.withView(childView), child);
 
-            y += size.height;
-
-            if (y > view.height) {
-                console.warn(`Viewport overflown by ${y - view.height}px`);
-            }
-
-            y += this.gap;
+            y += size.height + this.gap;
         }
     }
 }

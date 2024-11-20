@@ -1,58 +1,88 @@
 import { GuiComponent } from '../GuiComponent.js';
 
-import { HexColor } from '../../utils/colors.js';
-
-import { FlatContext } from '../../render/2d/FlatContext.js';
+import { Color } from '../../utils/colors.js';
+import { Size } from '../../utils/enums.js';
 
 class Text extends GuiComponent {
-    #text = '';
-
-    constructor(options={}) {
-        super();
-
-        const _options = Object.assign({
+    constructor(options) {
+        super(options);
+        
+        this.optionsManager.setOptions({
+            width: Size.matchParent,
+            height: Size.wrapContent,
             text: '',
-            color: new HexColor('#000'),
-            width: null,
-            lineHeight: 1.2,
+            color: new Color(0, 0, 0),
+            lineHeight: 1,
             wordWrap: false,
             textAlign: 'left',
             fontSize: 24
-        }, options);
+        });
+
+        const _options = this.optionsManager.loadFromObject(options);
+
+        this.width = _options.width;
+        this.height = _options.height;
+
+        this.text = _options.text;
 
         this.color = _options.color;
         this.lineHeight = _options.lineHeight;
         this.wordWrap = _options.wordWrap;
         this.textAlign = _options.textAlign;
         this.fontSize = _options.fontSize;
-
-        this.text = _options.text;
-
-        this.lines = [];
-
-        this.height = 0;
     }
 
-    #prepareContext(ctx) {
+    #wrapText(text, widthCallback, wrapWidth) {
+        if (wrapWidth === 0) {
+            return text.split('');
+        }
+
+        const rawLines = text.split('\n');
+        const lines = [];
+
+        for (let i = 0; i < rawLines.length; i++) {
+            const rawLine = rawLines[i];
+            const words = rawLine.split(' ');
+
+            let line = '';
+
+            for (const word of words) {
+                const testLine = line ? `${line} ${word}` : word;
+                const testWidth = widthCallback(testLine);
+
+                if (testWidth <= wrapWidth) {
+                    line = testLine;
+                } else {
+                    if (line) lines.push(line);
+                    line = word;
+                }
+            }
+
+            lines.push(line);
+        }
+
+        return lines;
+    }
+
+    render(context) {
+        super.render(context);
+
+        const ctx = context.overlayContext;
+
+        const view = context.view;
+
         ctx.fontSize(this.fontSize);
         ctx.textAlign(this.textAlign);
         ctx.textBaseline('middle');
         ctx.fillColor(this.color);
-    }
 
-    render(renderer, parent) {
-        super.render(renderer, parent);
+        const lines = this.wordWrap
+            ? this.#wrapText(this.text, (text) => ctx.measureTextWidth(text), size.width)
+            : [this.text];
 
-        /**
-         * @type FlatContext
-         */
-        const ctx = renderer.overlay;
-
-        const view = parent.view;
-
-        this.#prepareContext(ctx);
-
-        const lines = this.lines;
+        this.wrapHeight = lines.length * this.lineHeight * this.fontSize;
+        
+        const size = this.measure(context);
 
         for (let i = 0; i < lines.length; i++) {
             const line = lines[i];
@@ -64,10 +94,10 @@ class Text extends GuiComponent {
                     ctx.text(line, view.x, y);
                     break;
                 case 'center':
-                    ctx.text(line, view.x + view.width / 2, y);
+                    ctx.text(line, view.x + size.width / 2, y);
                     break;
                 case 'right':
-                    ctx.text(line, view.x + view.width, y);
+                    ctx.text(line, view.x + size.width, y);
                     break;
             }
         }

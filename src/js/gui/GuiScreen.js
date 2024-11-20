@@ -1,33 +1,33 @@
 class GuiScreen {
     constructor() {
-        this.components = [];
+        this.layout = null;
         
         this.backgroundImage = null;
         this.backgroundColor = null;
     }
 
-    init(renderer) {
-        const ctx = renderer.overlay;
-        ctx.reset();
-        
-        for (const component of this.components) {
-            component.init(renderer);
+    init(context) {
+        if (this.layout) {
+            this.layout.init(context.withScreen(this));
         }
     }
 
-    dispatch(renderer) {
-        const ctx = renderer.overlay;
-        ctx.reset();
+    dispatch(context) {
+        if (this.layout) {
+            this.layout.dispatch(context.withScreen(this));
+        }
     }
 
-    render(renderer) {
-        const ctx = renderer.overlay;
+    render(context) {
+        const ctx = context.overlayContext;
         ctx.clear();
+
+        const view = context.view;
         
         if (this.backgroundColor) {
             const color = this.backgroundColor;
-            ctx.fillColor(color.toString());
-            ctx.rect(0, 0, renderer.width, renderer.height);
+            ctx.fillColor(color);
+            ctx.rect(view.x, view.y, view.width, view.height);
             ctx.fill();
         }
         
@@ -35,24 +35,16 @@ class GuiScreen {
             const image = this.backgroundImage;
             ctx.backgroundImage(image);
         }
-    }
 
-    renderComponents(renderer) {
-        for (const component of this.components) {
-            component.render(renderer, {
-                view: {
-                    x: 0,
-                    y: 0,
-                    width: renderer.width,
-                    height: renderer.height
-                }
+        if (this.layout) {
+            const size = this.layout.measure(context);
+            const layoutContext = context.withScreen(this).withView({
+                x: view.x + (this.layout?.x ?? 0),
+                y: view.y + (this.layout?.y ?? 0),
+                width: size.width,
+                height: size.height
             });
-        }
-    }
-
-    dispatchComponents() {
-        for (const component of this.components) {
-            component.dispatch(renderer);
+            this.layout.render(layoutContext);
         }
     }
 }

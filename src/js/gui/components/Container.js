@@ -28,6 +28,10 @@ class Container extends GuiComponent {
         this.child = _options.child;
     }
 
+    init(renderer, parent) {
+        
+    }
+
     dispatch(renderer) {
         super.dispatch(renderer);
 

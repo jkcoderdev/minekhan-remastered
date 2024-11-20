@@ -11,7 +11,7 @@ class GuiComponent {
         };
     }
 
-    init(renderer) {}
+    init(renderer, parent) {}
 
     dispatch(renderer) {}
 

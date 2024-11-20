@@ -202,6 +202,10 @@ class FlatContext extends CanvasContext {
         this.#updateFontProperties();
     }
 
+    measureTextWidth(text) {
+        return this.ctx.measureText(text);
+    }
+
     text(text, x, y) {
         this.ctx.fillText(text, x, y);
     }

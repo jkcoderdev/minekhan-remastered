@@ -2,6 +2,7 @@ import { GuiScreen } from '../GuiScreen.js';
 
 import { Container } from '../components/Container.js';
 import { VerticalLayout } from '../components/VerticalLayout.js';
+import { Text } from '../components/Text.js';
 
 import { HexColor } from '../../utils/colors.js';
 
@@ -18,16 +19,15 @@ class MainMenuScreen extends GuiScreen {
                             backgroundColor: new HexColor('#ff000044'),
                             height: 128,
                         }),
+                        // new Text({
+                        //     text: 'Hello World'
+                        // }),
                         new Container({
                             backgroundColor: new HexColor('#ffff0044'),
                             height: 128,
                         }),
                         new Container({
                             backgroundColor: new HexColor('#00ff0044'),
-                            height: 128,
-                        }),
-                        new Container({
-                            backgroundColor: new HexColor('#0000ff44'),
                             height: 128,
                         }),
                     ],

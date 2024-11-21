@@ -203,7 +203,7 @@ class FlatContext extends CanvasContext {
     }
 
     measureTextWidth(text) {
-        return this.ctx.measureText(text);
+        return this.ctx.measureText(text).width;
     }
 
     text(text, x, y) {

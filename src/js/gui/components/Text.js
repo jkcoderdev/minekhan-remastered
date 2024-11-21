@@ -76,8 +76,10 @@ class Text extends GuiComponent {
         ctx.textBaseline('middle');
         ctx.fillColor(this.color);
 
+        const wrapWidth = this.measure(context).width;
+
         const lines = this.wordWrap
-            ? this.#wrapText(this.text, (text) => ctx.measureTextWidth(text), size.width)
+            ? this.#wrapText(this.text, (text) => ctx.measureTextWidth(text), wrapWidth)
             : [this.text];
 
         this.wrapHeight = lines.length * this.lineHeight * this.fontSize;

@@ -30,11 +30,27 @@ class Container extends GuiComponent {
     }
 
     wrapWidth(context) {
-        return this.child ? this.child.measureWidth(context) + this.padding * 2 + this.margin * 2 : 0;
+        if (this.child) {
+            if (this.child.width === Size.matchParent) {
+                return context.view.width;
+            } else {
+                return this.child.measureWidth(context) + this.padding * 2 + this.margin * 2;
+            }
+        }
+
+        return 0;
     }
 
     wrapHeight(context) {
-        return this.child ? this.child.measureHeight(context) + this.padding * 2 + this.margin * 2 : 0;
+        if (this.child) {
+            if (this.child.height === Size.matchParent) {
+                return context.view.height;
+            } else {
+                return this.child.measureHeight(context) + this.padding * 2 + this.margin * 2;
+            }
+        }
+
+        return 0;
     }
     
     render(context) {

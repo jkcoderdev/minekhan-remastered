@@ -87,14 +87,25 @@ class FlatContext extends CanvasContext {
 
     restoreState() {
         if (this.#savedStates === 0) {
-            throw new Error(`You can't restore a non saved state`);
+            throw new Error(`You can't restore unsaved state`);
         }
 
         this.ctx.restore();
         this.#savedStates--;
     }
 
-    filterArea(x, y, width, height, filterFunction) {
+    restrictArea(x, y, width, height, renderCallback) {
+        const canvasImageData = this.ctx.getImageData(0, 0, this.width, this.height);
+
+        renderCallback(this);
+
+        const areaImageData = this.ctx.getImageData(x, y, width, height);
+
+        this.ctx.putImageData(canvasImageData, 0, 0);
+        this.ctx.putImageData(areaImageData, x, y);
+    }
+
+    filterArea(x, y, width, height, filterCallback) {
         this.ctx.save();
 
         const imageData = this.ctx.getImageData(x, y, width, height);
@@ -107,7 +118,7 @@ class FlatContext extends CanvasContext {
         
         offsetContext.putImageData(imageData, 0, 0);
 
-        filterFunction(this);
+        filterCallback(this);
 
         offsetContext.filter = this.ctx.filter;
         offsetContext.drawImage(offsetCanvas, 0, 0);

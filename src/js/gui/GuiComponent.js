@@ -16,9 +16,6 @@ class GuiComponent {
         this.width = _options.width;
         this.height = _options.height;
 
-        this.wrapWidth = 0;
-        this.wrapHeight = 0;
-
         this.children = _options.child ? [_options.child] : _options.children;
     }
 
@@ -28,55 +25,63 @@ class GuiComponent {
 
     init(context) {
         for (const child of this.children) {
-            child.init(context);
+            child.init(context.withParent(this));
         }
     }
 
     dispatch(context) {
         for (const child of this.children) {
-            child.dispatch(context);
+            child.dispatch(context.withParent(this));
         }
     }
 
-    measure(context) {
+    wrapWidth(context) {
+        return 0;
+    }
+
+    wrapHeight(context) {
+        return 0;
+    }
+
+    measureWidth(context) {
         const view = context.view;
 
-        let width = 0;
-        let height = 0;
-
         if (!isEnum(this.width)) {
-            width = this.width;
+            return this.width;
         } else if (this.width === Size.matchParent) {
-            width = view.width;
+            return view.width;
         } else if (this.width === Size.wrapContent) {
-            width = this.wrapWidth;
+            return this.wrapWidth(context);
         }
+
+        return 0;
+    }
+
+    measureHeight(context) {
+        const view = context.view;
 
         if (!isEnum(this.height)) {
-            height = this.height;
+            return this.height;
         } else if (this.height === Size.matchParent) {
-            height = view.height;
+            return view.height;
         } else if (this.height === Size.wrapContent) {
-            height = this.wrapHeight;
+            return this.wrapHeight(context);
         }
+
+        return 0;
+    }
+
+    measure(context) {
+        const width = this.measureWidth(context);
+        const height = this.measureHeight(context);
 
         return { width, height };
     }
 
     render(context) {}
 
-    renderComponent(context, component) {
-        const view = context.view;
-        const size = component.measure(context);
-
-        const componentContext = context.withParent(this).withView({
-            x: view.x + (this.layout?.x ?? 0),
-            y: view.y + (this.layout?.y ?? 0),
-            width: size.width,
-            height: size.height
-        });
-
-        component.render(componentContext);
+    renderChild(context, child) {
+        child.render(context.withParent(this));
     }
 }
 

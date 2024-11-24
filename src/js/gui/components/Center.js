@@ -30,7 +30,7 @@ class Center extends GuiComponent {
                 height: size.height
             };
 
-            this.renderComponent(context.withView(childView), this.child);
+            this.renderChild(context.withView(childView), this.child);
         }
     }
 }

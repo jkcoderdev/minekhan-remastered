@@ -6,15 +6,29 @@ class GuiScreen {
         this.backgroundColor = null;
     }
 
+    createLayoutContext(context) {
+        const size = this.layout.measure(context);
+        const view = {
+            x: context.view.x,
+            y: context.view.y,
+            width: size.width,
+            height: size.height
+        };
+
+        return context.withView(view).withScreen(this);
+    }
+
     init(context) {
         if (this.layout) {
-            this.layout.init(context.withScreen(this));
+            const layoutContext = this.createLayoutContext(context);
+            this.layout.init(layoutContext);
         }
     }
 
     dispatch(context) {
         if (this.layout) {
-            this.layout.dispatch(context.withScreen(this));
+            const layoutContext = this.createLayoutContext(context);
+            this.layout.dispatch(layoutContext);
         }
     }
 
@@ -37,13 +51,7 @@ class GuiScreen {
         }
 
         if (this.layout) {
-            const size = this.layout.measure(context);
-            const layoutContext = context.withScreen(this).withView({
-                x: view.x + (this.layout?.x ?? 0),
-                y: view.y + (this.layout?.y ?? 0),
-                width: size.width,
-                height: size.height
-            });
+            const layoutContext = this.createLayoutContext(context);
             this.layout.render(layoutContext);
         }
     }

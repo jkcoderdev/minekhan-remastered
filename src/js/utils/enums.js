@@ -18,4 +18,16 @@ const Size = Enum('Size', [
     'wrapContent'
 ]);
 
-export { Size, isEnum };
+const Alignment = Enum('Alignment', [
+    'topLeft',
+    'topCenter',
+    'topBottom',
+    'centerLeft',
+    'center',
+    'centerRight',
+    'bottomLeft',
+    'bottomCenter',
+    'bottomRight'
+]);
+
+export { Size, Alignment, isEnum };

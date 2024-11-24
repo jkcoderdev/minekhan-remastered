@@ -31,15 +31,15 @@ class GuiContext {
     }
 
     withView(view) {
-        return new GuiContext(this.renderer, Object.assign(this.options, { view }));
+        return new GuiContext(this.renderer, Object.assign({}, this.options, { view }));
     }
 
     withParent(parent) {
-        return new GuiContext(this.renderer, Object.assign(this.options, { parent }));
+        return new GuiContext(this.renderer, Object.assign({}, this.options, { parent }));
     }
 
     withScreen(screen) {
-        return new GuiContext(this.renderer, Object.assign(this.options, { screen }));
+        return new GuiContext(this.renderer, Object.assign({}, this.options, { screen }));
     }
 
     get overlayContext() {

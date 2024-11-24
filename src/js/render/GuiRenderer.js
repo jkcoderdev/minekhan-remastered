@@ -16,6 +16,8 @@ class GuiRenderer {
             this.context = new GuiContext(renderer);
         });
 
+        window.renderedFrame = false;
+
         ctx.on('frame', () => {
             if (this.currentScreen) {
                 const screen = this.currentScreen;

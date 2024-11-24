@@ -1,5 +1,6 @@
-import { Size } from '../../utils/enums.js';
 import { GuiComponent } from '../GuiComponent.js';
+
+import { Size, Alignment } from '../../utils/enums.js';
 
 class VerticalLayout extends GuiComponent {
     constructor(options) {
@@ -7,7 +8,8 @@ class VerticalLayout extends GuiComponent {
 
         this.optionsManager.setOptions({
             width: Size.matchParent,
-            height: Size.matchParent,
+            height: Size.wrapContent,
+            alignment: Alignment.topLeft,
             gap: 0,
         });
 
@@ -19,25 +21,49 @@ class VerticalLayout extends GuiComponent {
         this.gap = _options.gap;
     }
 
+    wrapHeight(context) {
+        let height = this.gap * Math.max(this.children.length - 1, 0);
+
+        for (const child of this.children) {
+            height += child.measureHeight(context);
+        }
+
+        return height;
+    }
+
+    wrapWidth(context) {
+        let maxWidth = 0;
+
+        for (const child of this.children) {
+            const width = child.measureWidth(context);
+            if (maxWidth < width) {
+                maxWidth = width;
+            }
+        }
+
+        return maxWidth;
+    }
+
     render(context) {
         super.render(context);
 
         const view = context.view;
+        const size = this.measure(context);
 
         let y = 0;
 
         for (const child of this.children) {
-            const size = child.measure(context);
+            const childSize = child.measure(context);
             const childView = {
                 x: view.x,
                 y: view.y + y,
-                width: size.width,
-                height: size.height,
+                width: childSize.width,
+                height: childSize.height,
             };
 
-            this.renderComponent(context.withView(childView), child);
+            this.renderChild(context.withView(childView), child);
 
-            y += size.height + this.gap;
+            y += childSize.height + this.gap;
         }
     }
 }

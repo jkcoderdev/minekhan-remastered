@@ -4,6 +4,11 @@ import { Color } from '../../utils/colors.js';
 import { Size } from '../../utils/enums.js';
 
 class Text extends GuiComponent {
+    #lastText = '';
+    #lines = [];
+
+    #lastWidth = 0;
+
     constructor(options) {
         super(options);
         
@@ -60,8 +65,39 @@ class Text extends GuiComponent {
 
             lines.push(line);
         }
-
+        
         return lines;
+    }
+
+    #prepareStyles(context) {
+        const ctx = context.overlayContext;
+
+        ctx.fontSize(this.fontSize);
+        ctx.textAlign(this.textAlign);
+        ctx.textBaseline('middle');
+        ctx.fillColor(this.color);
+    }
+
+    #updateLines(context) {
+        const maxWidth = this.measureWidth(context);
+
+        if (this.#lastText === this.text && maxWidth === this.#lastWidth) return this.#lines;
+        this.#lastText = this.text;
+        this.#lastWidth = maxWidth;
+
+        this.#prepareStyles(context);
+
+        const ctx = context.overlayContext;
+
+        this.#lines = this.wordWrap
+            ? this.#wrapText(this.text, (text) => ctx.measureTextWidth(text), maxWidth)
+            : [this.text];
+
+        return this.#lines;
+    }
+
+    wrapHeight(context) {
+        return this.#lines.length * this.lineHeight * this.fontSize;
     }
 
     render(context) {
@@ -71,18 +107,9 @@ class Text extends GuiComponent {
 
         const view = context.view;
 
-        ctx.fontSize(this.fontSize);
-        ctx.textAlign(this.textAlign);
-        ctx.textBaseline('middle');
-        ctx.fillColor(this.color);
-
-        const wrapWidth = this.measure(context).width;
-
-        const lines = this.wordWrap
-            ? this.#wrapText(this.text, (text) => ctx.measureTextWidth(text), wrapWidth)
-            : [this.text];
-
-        this.wrapHeight = lines.length * this.lineHeight * this.fontSize;
+        this.#prepareStyles(context);
+        
+        const lines = this.#updateLines(context);
         
         const size = this.measure(context);
 

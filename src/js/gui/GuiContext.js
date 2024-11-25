@@ -31,7 +31,14 @@ class GuiContext {
     }
 
     withView(view) {
-        return new GuiContext(this.renderer, Object.assign({}, this.options, { view }));
+        return new GuiContext(this.renderer, Object.assign({}, this.options, {
+            view: Object.assign({
+                x: this.view.x,
+                y: this.view.y,
+                width: this.view.width,
+                height: this.view.height
+            }, view)
+        }));
     }
 
     withParent(parent) {

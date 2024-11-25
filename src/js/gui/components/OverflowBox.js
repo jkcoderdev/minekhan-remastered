@@ -9,12 +9,17 @@ class OverflowBox extends GuiComponent {
         this.optionsManager.setOptions({
             width: Size.matchParent,
             height: Size.matchParent,
+            offsetX: 0,
+            offsetY: 0
         });
 
         const _options = this.optionsManager.loadFromObject(options);
 
         this.width = _options.width;
         this.height = _options.height;
+
+        this.offsetX = _options.offsetX;
+        this.offsetY = _options.offsetY;
     }
 
     render(context) {
@@ -26,13 +31,13 @@ class OverflowBox extends GuiComponent {
         if (this.child) {
             const childSize = this.child.measure(context);
             const childView = {
-                x: view.x,
-                y: view.y,
+                x: view.x + this.offsetX,
+                y: view.y + this.offsetY,
                 width: childSize.width,
                 height: childSize.height
             };
 
-            ctx.restrictArea(childView.x, childView.y, childView.width, childView.height, () => {
+            ctx.restrictArea(view.x, view.y, childSize.width, childSize.height, () => {
                 this.renderChild(context.withView(childView), this.child);
             });
         }

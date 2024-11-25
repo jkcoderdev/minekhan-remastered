@@ -30,4 +30,9 @@ const Alignment = Enum('Alignment', [
     'bottomRight'
 ]);
 
-export { Size, Alignment, isEnum };
+const ScrollAxis = Enum('ScrollAxis', [
+    'vertical',
+    'horizontal'
+]);
+
+export { Size, Alignment, ScrollAxis, isEnum };

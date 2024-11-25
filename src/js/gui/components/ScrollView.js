@@ -37,13 +37,13 @@ class ScrollView extends GuiComponent {
     }
 
     set scrollX(x) {
+        this.#scroll.x = x;
+
         this.box = new OverflowBox({
             child: this.child,
-            offsetX: -x,
-            offsetY: -this.#scroll.y
+            offsetX: -this.#scroll.x,
+            offsetY: -this.#scroll.y,
         });
-
-        this.#scroll.x = x;
     }
 
     set scrollY(y) {

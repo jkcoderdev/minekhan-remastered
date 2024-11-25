@@ -29,9 +29,9 @@ class GuiComponent {
         }
     }
 
-    dispatch(context) {
+    destroy(context) {
         for (const child of this.children) {
-            child.dispatch(context.withParent(this));
+            child.destroy(context.withParent(this));
         }
     }
 

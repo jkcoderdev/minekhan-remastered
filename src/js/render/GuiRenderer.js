@@ -32,7 +32,7 @@ class GuiRenderer {
         }
 
         if (this.currentScreen) {
-            this.currentScreen.dispatch(this.context);
+            this.currentScreen.destroy(this.context);
         }
 
         this.currentScreen = screen;

@@ -25,10 +25,10 @@ class GuiScreen {
         }
     }
 
-    dispatch(context) {
+    destroy(context) {
         if (this.layout) {
             const layoutContext = this.createLayoutContext(context);
-            this.layout.dispatch(layoutContext);
+            this.layout.destroy(layoutContext);
         }
     }
 

@@ -44,15 +44,18 @@ class VerticalLayout extends GuiComponent {
         return maxWidth;
     }
 
-    render(context) {
-        super.render(context);
+    computeViews(context) {
+        super.computeViews(context);
 
         const view = context.view;
-        const size = this.measure(context);
+
+        const children = this.children;
 
         let y = 0;
 
-        for (const child of this.children) {
+        for (let i = 0; i < children.length; i++) {
+            const child = children[i];
+
             const childSize = child.measure(context);
             const childView = {
                 x: view.x,
@@ -61,10 +64,35 @@ class VerticalLayout extends GuiComponent {
                 height: childSize.height,
             };
 
-            this.renderChild(context.withView(childView), child);
+            this.views[i] = childView;
 
             y += childSize.height + this.gap;
         }
+    }
+
+    render(context) {
+        super.render(context);
+
+        this.renderChildren(context);
+
+        // const view = context.view;
+        // const size = this.measure(context);
+
+        // let y = 0;
+
+        // for (const child of this.children) {
+        //     const childSize = child.measure(context);
+        //     const childView = {
+        //         x: view.x,
+        //         y: view.y + y,
+        //         width: childSize.width,
+        //         height: childSize.height,
+        //     };
+
+        //     this.renderChild(context.withView(childView), child);
+
+        //     y += childSize.height + this.gap;
+        // }
     }
 }
 

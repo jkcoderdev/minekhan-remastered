@@ -13,7 +13,7 @@ class Text extends GuiComponent {
         super(options);
         
         this.optionsManager.setOptions({
-            width: Size.matchParent,
+            width: Size.wrapContent,
             height: Size.wrapContent,
             text: '',
             color: new Color(0, 0, 0),
@@ -94,6 +94,16 @@ class Text extends GuiComponent {
             : [this.text];
 
         return this.#lines;
+    }
+
+    wrapWidth(context) {
+        if (this.wordWrap) return 0;
+
+        this.#prepareStyles(context);
+
+        const ctx = context.overlayContext;
+
+        return ctx.measureTextWidth(this.text);
     }
 
     wrapHeight(context) {

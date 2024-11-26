@@ -60,7 +60,7 @@ class ScrollView extends GuiComponent {
         this.limitScroll(context);
         this.build();
 
-        this.renderChild(context.withParent(this), this.box);
+        this.renderChild(context, this.box);
     }
 }
 

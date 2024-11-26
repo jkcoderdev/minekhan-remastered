@@ -18,6 +18,8 @@ class VerticalLayout extends GuiComponent {
         this.width = _options.width;
         this.height = _options.height;
 
+        this.alignment = _options.alignment;
+
         this.gap = _options.gap;
     }
 
@@ -48,8 +50,54 @@ class VerticalLayout extends GuiComponent {
         super.computeViews(context);
 
         const view = context.view;
+        const size = this.measure(context);
+
+        const wrapWidth = this.wrapWidth(context);
+        const wrapHeight = this.wrapHeight(context);
 
         const children = this.children;
+
+        let aligmentX = 'start';
+        let aligmentY = 'start';
+
+        switch (this.alignment) {
+            case Alignment.topLeft:
+                aligmentX = 'start';
+                aligmentY = 'start';
+                break;
+            case Alignment.topCenter:
+                aligmentX = 'center';
+                aligmentY = 'start';
+                break;
+            case Alignment.topRight:
+                aligmentX = 'end';
+                aligmentY = 'start';
+                break;
+            case Alignment.centerLeft:
+                aligmentX = 'start';
+                aligmentY = 'center';
+                break;
+            case Alignment.center:
+                aligmentX = 'center';
+                aligmentY = 'center';
+                break;
+            case Alignment.centerRight:
+                aligmentX = 'end';
+                aligmentY = 'center';
+                break;
+            case Alignment.bottomLeft:
+                aligmentX = 'start';
+                aligmentY = 'end';
+                break;
+            case Alignment.bottomCenter:
+                aligmentX = 'center';
+                aligmentY = 'end';
+                break;
+            case Alignment.bottomRight:
+                aligmentX = 'end';
+                aligmentY = 'end';
+                break;
+        }
 
         let y = 0;
 
@@ -57,9 +105,25 @@ class VerticalLayout extends GuiComponent {
             const child = children[i];
 
             const childSize = child.measure(context);
+            
+            let offsetX = 0;
+            let offsetY = 0;
+
+            if (aligmentX === 'center') {
+                offsetX = (size.width - wrapWidth) / 2 + (wrapWidth - childSize.width) / 2;
+            } else if (aligmentX === 'end') {
+                offsetX = size.width - childSize.width;
+            }
+
+            if (aligmentY === 'center') {
+                offsetY = (size.height - wrapHeight) / 2;
+            } else if (aligmentY === 'end') {
+                offsetY = size.height - wrapHeight;
+            }
+
             const childView = {
-                x: view.x,
-                y: view.y + y,
+                x: view.x + offsetX,
+                y: view.y + offsetY + y,
                 width: childSize.width,
                 height: childSize.height,
             };

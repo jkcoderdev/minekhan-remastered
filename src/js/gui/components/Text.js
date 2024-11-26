@@ -1,7 +1,7 @@
 import { GuiComponent } from '../GuiComponent.js';
 
 import { Color } from '../../utils/colors.js';
-import { Size } from '../../utils/enums.js';
+import { Size, TextAlign } from '../../utils/enums.js';
 
 class Text extends GuiComponent {
     #lastText = '';
@@ -19,7 +19,7 @@ class Text extends GuiComponent {
             color: new Color(0, 0, 0),
             lineHeight: 1,
             wordWrap: false,
-            textAlign: 'left',
+            textAlign: TextAlign.left,
             fontSize: 24
         });
 
@@ -73,7 +73,21 @@ class Text extends GuiComponent {
         const ctx = context.overlayContext;
 
         ctx.fontSize(this.fontSize);
-        ctx.textAlign(this.textAlign);
+
+        switch (this.textAlign) {
+            case TextAlign.left:
+                ctx.textAlign('left');
+                break;
+            case TextAlign.center:
+                ctx.textAlign('center');
+                break;
+            case TextAlign.right:
+                ctx.textAlign('right');
+                break;
+            default:
+                throw new Error('Incorrect text align value');
+        }
+
         ctx.textBaseline('middle');
         ctx.fillColor(this.color);
     }
@@ -129,13 +143,13 @@ class Text extends GuiComponent {
             const y = view.y + (i + 0.5) * this.lineHeight * this.fontSize;
 
             switch(this.textAlign) {
-                case 'left':
+                case TextAlign.left:
                     ctx.text(line, view.x, y);
                     break;
-                case 'center':
+                case TextAlign.center:
                     ctx.text(line, view.x + size.width / 2, y);
                     break;
-                case 'right':
+                case TextAlign.right:
                     ctx.text(line, view.x + size.width, y);
                     break;
             }

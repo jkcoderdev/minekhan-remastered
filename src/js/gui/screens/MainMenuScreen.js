@@ -6,7 +6,7 @@ import { VerticalLayout } from '../components/VerticalLayout.js';
 import { Text } from '../components/Text.js';
 
 import { HexColor } from '../../utils/colors.js';
-import { Alignment, Size } from '../../utils/enums.js';
+import { Alignment, Size, TextAlign } from '../../utils/enums.js';
 
 class MainMenuScreen extends GuiScreen {
     constructor() {
@@ -17,17 +17,18 @@ class MainMenuScreen extends GuiScreen {
             margin: 32,
             child: new Center({
                 child: new VerticalLayout({
-                    alignment: Alignment.center,
-                    width: Size.wrapContent,
-                    height: Size.wrapContent,
+                    alignment: Alignment.centerLeft,
+                    width: Size.matchParent,
+                    height: Size.matchParent,
                     children: [
                         new Text({
                             text: 'Hello World'
                         }),
                         new Text({
                             text: 'Lorem ipsum lorem ipsum lorem ispum. Lorem ipsum.',
+                            width: Size.matchParent,
                             wordWrap: true,
-                            width: 256
+                            // textAlign: TextAlign.center
                         }),
                         new Text({
                             text: 'Hello World'

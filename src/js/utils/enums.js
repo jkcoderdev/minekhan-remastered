@@ -35,4 +35,10 @@ const ScrollAxis = Enum('ScrollAxis', [
     'horizontal'
 ]);
 
-export { Size, Alignment, ScrollAxis, isEnum };
+const TextAlign = Enum('TextAlign', [
+    'left',
+    'center',
+    'right'
+])
+
+export { Size, Alignment, ScrollAxis, TextAlign, isEnum };

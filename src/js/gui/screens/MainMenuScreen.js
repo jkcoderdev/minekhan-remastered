@@ -19,7 +19,7 @@ class MainMenuScreen extends GuiScreen {
             backgroundColor: new HexColor('#fff4'),
             child: new ScrollView({
                 child: new Text({
-                    height: Size.matchParent,
+                    height: Size.wrapContent,
                     text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas sed viverra mi, sit amet feugiat sem. Curabitur vitae dignissim justo. Ut non neque porta, efficitur eros sit amet, pellentesque leo. Phasellus faucibus leo in risus ultrices, quis ullamcorper ante aliquet. Pellentesque mauris felis, efficitur sit amet massa vitae, ornare ultrices elit. Praesent a nunc eleifend lacus fringilla euismod. Aenean aliquam, risus in scelerisque aliquet, ipsum massa fermentum velit, ut lobortis metus arcu ut nisl. Phasellus ultricies dignissim malesuada. Sed consequat metus sed purus aliquet egestas. Suspendisse potenti. Phasellus venenatis ultrices quam. Aenean mollis quam eros, eu aliquet eros maximus eu. Pellentesque sodales arcu in interdum blandit.',
                     color: new HexColor('#fff'),
                     fontSize: 28,

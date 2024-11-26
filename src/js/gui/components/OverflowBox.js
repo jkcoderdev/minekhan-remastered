@@ -22,25 +22,33 @@ class OverflowBox extends GuiComponent {
         this.offsetY = _options.offsetY;
     }
 
+    computeViews(context) {
+        super.computeViews(context);
+
+        if (!this.child) return;
+
+        const view = context.view;
+        const childSize = this.child.measure(context);
+
+        this.view = {
+            x: view.x + this.offsetX,
+            y: view.y + this.offsetY,
+            width: childSize.width,
+            height: childSize.height
+        };
+    }
+
     render(context) {
         super.render(context);
 
-        const view = context.view;
         const ctx = context.overlayContext;
 
-        if (this.child) {
-            const childSize = this.child.measure(context);
-            const childView = {
-                x: view.x + this.offsetX,
-                y: view.y + this.offsetY,
-                width: childSize.width,
-                height: childSize.height
-            };
+        const view = context.view;
+        const size = this.measure(context);
 
-            ctx.restrictArea(view.x, view.y, childSize.width, childSize.height, () => {
-                this.renderChild(context.withView(childView), this.child);
-            });
-        }
+        ctx.restrictArea(view.x, view.y, size.width, size.height, () => {
+            this.renderChildren(context);
+        });
     }
 }
 

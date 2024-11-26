@@ -52,6 +52,22 @@ class Container extends GuiComponent {
 
         return 0;
     }
+
+    computeViews(context) {
+        super.computeViews(context);
+
+        if (!this.child) return;
+
+        const view = context.view;
+        const size = this.measure(context);
+
+        this.view = {
+            x: view.x + this.margin + this.padding,
+            y: view.y + this.margin + this.padding,
+            width: size.width - this.margin * 2 - this.padding * 2,
+            height: size.height - this.margin * 2 - this.padding * 2
+        };
+    }
     
     render(context) {
         super.render(context);
@@ -78,17 +94,8 @@ class Container extends GuiComponent {
             ctx.rect(x, y, width, height);
             ctx.fill();
         }
-    
-        if (this.child) {
-            const childView = {
-                x: x + this.padding,
-                y: y + this.padding,
-                width: width - this.padding * 2,
-                height: height - this.padding * 2
-            };
 
-            this.renderChild(context.withView(childView), this.child);
-        }
+        this.renderChildren(context);
     }
 }
 

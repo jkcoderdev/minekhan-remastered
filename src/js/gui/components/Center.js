@@ -17,6 +17,25 @@ class Center extends GuiComponent {
         this.height = _options.height;
     }
 
+    computeViews(context) {
+        super.computeViews(context);
+
+        if (!this.child) return;
+
+        const view = context.view;
+        const size = this.measure(context);
+
+        const childSize = this.child.measure(context);
+        const childView = {
+            x: view.x + (size.width - childSize.width) / 2,
+            y: view.y + (size.height - childSize.height) / 2,
+            width: childSize.width,
+            height: childSize.height
+        };
+
+        this.view = childView;
+    }
+
     render(context) {
         super.render(context);
 

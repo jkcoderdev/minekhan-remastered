@@ -3,6 +3,7 @@ import { GuiScreen } from '../GuiScreen.js';
 import { Container } from '../components/Container.js';
 import { Center } from '../components/Center.js';
 import { VerticalLayout } from '../components/VerticalLayout.js';
+import { Button } from '../components/Button.js';
 import { Text } from '../components/Text.js';
 
 import { HexColor } from '../../utils/colors.js';
@@ -17,25 +18,16 @@ class MainMenuScreen extends GuiScreen {
             margin: 32,
             child: new Center({
                 child: new VerticalLayout({
-                    alignment: Alignment.centerLeft,
+                    alignment: Alignment.center,
                     width: Size.matchParent,
                     height: Size.matchParent,
                     children: [
                         new Text({
                             text: 'Hello World'
                         }),
-                        new Text({
-                            text: 'Lorem ipsum lorem ipsum lorem ispum. Lorem ipsum.',
-                            width: Size.matchParent,
-                            wordWrap: true,
-                            // textAlign: TextAlign.center
-                        }),
-                        new Text({
-                            text: 'Hello World'
-                        }),
-                        new Text({
-                            text: 'Hello World'
-                        }),
+                        new Button({
+                            text: 'Test Buttoooooon'
+                        })
                     ]
                 })
             })

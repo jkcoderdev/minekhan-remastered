@@ -50,7 +50,6 @@ class ScrollView extends GuiComponent {
         super.init(context);
 
         window.addEventListener('wheel', e => {
-            // console.log(e.deltaY);
             this.#scroll.y += e.deltaY;
         });
     }
@@ -60,8 +59,6 @@ class ScrollView extends GuiComponent {
 
         this.limitScroll(context);
         this.build();
-
-        // console.log(this.#scroll);
 
         this.renderChild(context.withParent(this), this.box);
     }
